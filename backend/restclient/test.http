@@ -1,0 +1,34 @@
+### REGISTER USER
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "name": "Duncan Ochieng",
+  "email": "ochiengduncan7878@gmail.com",
+  "password": "dante1234"
+}
+
+
+### VERIFY OTP
+POST http://localhost:3000/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "ochiengduncan7878@gmail.com",
+  "otp": "277698"
+}
+
+
+### LOGIN USER
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "ochiengduncan7878@gmail.com",
+  "password": "dante1234"
+}
+
+
+### ACCESS PROTECTED ENDPOINT (example)
+GET http://localhost:3000/user/profile
+Authorization: Bearer {{access_token}}
