@@ -15,7 +15,7 @@ export class MailerService {
     const templatePath = path.join(__dirname, 'templates', 'otp-email.ejs');
     const html = await this.renderTemplate(templatePath, { name, otp });
 
-    await this.nestMailerService.sendMail({
+    await this.sendMail({
       to,
       subject: 'Your Smart Grocery OTP Code',
       html,
@@ -29,11 +29,34 @@ export class MailerService {
     const templatePath = path.join(__dirname, 'templates', 'welcome-email.ejs');
     const html = await this.renderTemplate(templatePath, { name });
 
-    await this.nestMailerService.sendMail({
+    await this.sendMail({
       to,
       subject: 'Welcome to Smart Grocery 🎉',
       html,
     });
+  }
+
+  /**
+   * Send custom HTML email
+   */
+  async sendHtmlEmail(to: string, subject: string, html: string): Promise<void> {
+    await this.sendMail({ to, subject, html });
+  }
+
+  /**
+   * Generic email sending method
+   */
+  async sendMail(mailOptions: { to: string; subject: string; html: string }): Promise<void> {
+    try {
+      await this.nestMailerService.sendMail({
+        to: mailOptions.to,
+        subject: mailOptions.subject,
+        html: mailOptions.html,
+      });
+    } catch (error) {
+      console.error('Email sending error:', error);
+      throw new InternalServerErrorException('Error sending email');
+    }
   }
 
   /**

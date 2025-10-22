@@ -18,41 +18,99 @@ model User {
   otpExpiresAt     DateTime?
   verificationCode String?
   avatarUrl        String?
-  avatarPublicId   String?   // ← ADD THIS for Cloudinary public_id
+  avatarPublicId   String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
-  store            Store?
-  
-  orders Order[]
+
+  // Relations
+  store     Store?
+  orders    Order[]
+  cartItems Cart[]
 }
 
 model Store {
-  id       String    @id @default(uuid())
-  name     String
-  location String
-  ownerId  String    @unique // Ensures one store per user
-  owner    User      @relation(fields: [ownerId], references: [id])
-  products Product[]
+  id        String    @id @default(uuid())
+  name      String    @unique
+  location  String
+  ownerId   String    @unique
+  owner     User      @relation(fields: [ownerId], references: [id])
+  products  Product[]
+  createdAt DateTime  @default(now())
+
+  @@map("stores")
 }
 
 model Product {
-  id          String    @id @default(uuid())
+  id          String          @id @default(uuid())
   name        String
   description String?
   price       Float
   stock       Int
+  reorderLevel Int?           // threshold for low stock alerts
   expiryDate  DateTime?
   imageUrl    String?
   storeId     String
-  store       Store     @relation(fields: [storeId], references: [id])
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime        @default(now())
+  lowStockThreshold Int @default(10)
+
+  // Relations
+  store        Store          @relation(fields: [storeId], references: [id])
+  cartItems    Cart[]
+  orderItems   OrderItem[]
+  stockHistory StockHistory[] // ← ADD THIS: Reverse relation for StockHistory
+
+  // optional: index for expiry queries (SQL Server supports indexing via @@index)
+  @@index([expiryDate])
+}
+
+model StockHistory {
+  id         String   @id @default(uuid())
+  productId  String
+  change     Int
+  reason     String?
+  createdBy  String?
+  createdAt  DateTime @default(now())
+
+  product    Product  @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  // Optional: Prevent duplicate entries for same product at same time
+  @@unique([productId, createdAt])
+  // Or if you want more granular control:
+  // @@unique([productId, change, createdAt])
+}
+
+model Cart {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  quantity  Int      @default(1)
+  addedAt   DateTime @default(now())
+
+  // Relations with explicit referential actions
+  user    User    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  product Product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Order {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
   total     Float
-  status    String   @default("PENDING") // Replaces OrderStatus enum
+  status    String   @default("PENDING")
   createdAt DateTime @default(now())
+
+  // Relations
+  user  User        @relation(fields: [userId], references: [id])
+  items OrderItem[]
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+
+  // Fixed referential actions to avoid cascade loops
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  product Product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

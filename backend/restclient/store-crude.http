@@ -1,0 +1,32 @@
+POST http://localhost:3000/stores
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjFmYTViYi05NzI2LTQ5OTItYTQ2Mi03Y2I1NDM5Y2M5N2YiLCJlbWFpbCI6ImR1bmNhbm95dWdpMjAwMUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjEwNTYzNTgsImV4cCI6MTc2OTY5NjM1OH0.9TGI9vl4WXPW4LlSjB4vab41hUPYW8mpRYP23jN4Mb4
+Content-Type: application/json
+
+{
+  "name": "Duncan's Mini Mart",
+  "location": "Nairobi, Westlands"
+}
+### Get All Stores
+GET http://localhost:3000/stores
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjFmYTViYi05NzI2LTQ5OTItYTQ2Mi03Y2I1NDM5Y2M5N2YiLCJlbWFpbCI6ImR1bmNhbm95dWdpMjAwMUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjEwNTYzNTgsImV4cCI6MTc2OTY5NjM1OH0.9TGI9vl4WXPW4LlSjB4vab41hUPYW8mpRYP23jN4Mb4
+
+GET http://localhost:3000/stores/me
+Authorization: Bearer <TOKEN>
+
+### Get Store by ID
+GET http://localhost:3000/stores/{storeId}
+Authorization: Bearer <TOKEN>
+
+### Update Store
+PATCH http://localhost:3000/stores/656a2466-a15e-4103-bb51-2ae0f690785d
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjFmYTViYi05NzI2LTQ5OTItYTQ2Mi03Y2I1NDM5Y2M5N2YiLCJlbWFpbCI6ImR1bmNhbm95dWdpMjAwMUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjEwNTYzNTgsImV4cCI6MTc2OTY5NjM1OH0.9TGI9vl4WXPW4LlSjB4vab41hUPYW8mpRYP23jN4Mb4
+Content-Type: application/json
+
+{
+  "name": "Duncan's Mega Mart"
+}
+
+### Delete Store
+DELETE http://localhost:3000/stores/656a2466-a15e-4103-bb51-2ae0f690785d
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMjFmYTViYi05NzI2LTQ5OTItYTQ2Mi03Y2I1NDM5Y2M5N2YiLCJlbWFpbCI6ImR1bmNhbm95dWdpMjAwMUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjEwNTYzNTgsImV4cCI6MTc2OTY5NjM1OH0.9TGI9vl4WXPW4LlSjB4vab41hUPYW8mpRYP23jN4Mb4
+

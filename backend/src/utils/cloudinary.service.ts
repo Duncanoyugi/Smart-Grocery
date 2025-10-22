@@ -38,6 +38,10 @@ export class CloudinaryService {
     });
   }
 
+  async uploadImage(file: Express.Multer.File, folder: string = 'products'): Promise<any> {
+    return this.uploadBuffer(file.buffer, { folder });
+  }
+
   async deleteImage(publicId: string): Promise<any> {
     try {
       return await cloudinary.uploader.destroy(publicId);

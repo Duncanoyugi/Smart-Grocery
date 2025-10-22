@@ -1,0 +1,28 @@
+### 1. Place Order (Customer)
+POST http://localhost:3000/orders/place
+Authorization: Bearer YOUR_CUSTOMER_JWT_TOKEN
+
+### 2. Get My Orders (Customer)
+GET http://localhost:3000/orders/my-orders
+Authorization: Bearer YOUR_CUSTOMER_JWT_TOKEN
+
+### 3. Get Specific Order (Customer)
+GET http://localhost:3000/orders/ORDER_ID
+Authorization: Bearer YOUR_CUSTOMER_JWT_TOKEN
+
+### 4. Cancel Order (Customer)
+DELETE http://localhost:3000/orders/ORDER_ID/cancel
+Authorization: Bearer YOUR_CUSTOMER_JWT_TOKEN
+
+### 5. Get All Orders (Admin Only)
+GET http://localhost:3000/orders
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+
+### 6. Update Order Status (Admin Only)
+PATCH http://localhost:3000/orders/ORDER_ID/status
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "status": "PROCESSING"
+}

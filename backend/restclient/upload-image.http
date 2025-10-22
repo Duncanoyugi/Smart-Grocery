@@ -1,15 +1,15 @@
-### Update Profile with Avatar
+### Update Profile with Real File Reference
 PATCH http://localhost:3000/users/update
-Authorization: Bearer YOUR_ACTUAL_JWT_TOKEN
-Content-Type: multipart/form-data; boundary=boundary123
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZWU5ZGM0Yi1jOWQzLTRkYjctYWI1YS03NjBhZTIxMTA0NzAiLCJlbWFpbCI6Im9jaGllbmdkdW5jYW43ODc4QGdtYWlsLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc2MTA1MDIzNSwiZXhwIjoxNzY5NjkwMjM1fQ.xCjjsOcqo3i7ANO5Y_ML9BbM_uReT-doE5NqR8j1P5Y
+Content-Type: multipart/form-data; boundary=----Boundary123
 
---boundary123
-Content-Disposition: form-data; name="avatar"; filename="test.jpg"
-Content-Type: image/jpeg
-
-< /9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8A/9k=
---boundary123
+------Boundary123
 Content-Disposition: form-data; name="name"
 
 Duncan Updated
---boundary123--
+------Boundary123
+Content-Disposition: form-data; name="avatar"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./test-image.jpg
+------Boundary123--
