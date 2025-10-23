@@ -25,7 +25,9 @@ export class ProductsService {
         stock: dto.stock,
         expiryDate: dto.expiryDate ? new Date(dto.expiryDate) : null,
         imageUrl: upload.secure_url,
+        category: dto.category, // ✅ ADDED: category is now required
         storeId: store.id,
+        reorderLevel: dto.reorderLevel, // ✅ ADDED: reorderLevel
       },
     });
   }
@@ -43,7 +45,11 @@ export class ProductsService {
 
     return this.prisma.product.update({
       where: { id: productId },
-      data: { ...dto, imageUrl },
+      data: { 
+        ...dto, 
+        imageUrl,
+        ...(dto.expiryDate && { expiryDate: new Date(dto.expiryDate) }), // Handle date conversion
+      },
     });
   }
 
@@ -62,43 +68,77 @@ export class ProductsService {
     maxPrice?: number;
     inStock?: boolean;
     storeId?: string;
- }) {
+    category?: string; // ✅ ADDED: category filter
+  }) {
     const filters: any = {};
 
     if (query.search) {
-        filters.name = { contains: query.search, mode: 'insensitive' };
+      filters.OR = [
+        { name: { contains: query.search, mode: 'insensitive' } },
+        { description: { contains: query.search, mode: 'insensitive' } },
+        { category: { contains: query.search, mode: 'insensitive' } }, // ✅ ADDED: search by category
+      ];
     }
 
     if (query.storeId) {
-        filters.storeId = query.storeId;
+      filters.storeId = query.storeId;
+    }
+
+    if (query.category) {
+      filters.category = { contains: query.category, mode: 'insensitive' }; // ✅ ADDED: filter by category
     }
 
     if (query.inStock) {
-        filters.stock = { gt: 0 };
+      filters.stock = { gt: 0 };
     }
 
     if (query.minPrice || query.maxPrice) {
-        filters.price = {};
-        if (query.minPrice) filters.price.gte = query.minPrice;
-        if (query.maxPrice) filters.price.lte = query.maxPrice;
+      filters.price = {};
+      if (query.minPrice) filters.price.gte = query.minPrice;
+      if (query.maxPrice) filters.price.lte = query.maxPrice;
     }
 
     return this.prisma.product.findMany({
-        where: filters,
-        include: { store: { select: { name: true, location: true } } },
-        orderBy: { createdAt: 'desc' },
+      where: filters,
+      include: { store: { select: { name: true, location: true } } },
+      orderBy: { createdAt: 'desc' },
     });
-}
+  }
 
-    async getProductById(productId: string) {
-        const product = await this.prisma.product.findUnique({
-            where: { id: productId },
-            include: {
-            store: { select: { name: true, location: true } },
-            },
-        });
+  async getProductById(productId: string) {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+      include: {
+        store: { select: { name: true, location: true } },
+      },
+    });
 
-        if (!product) throw new NotFoundException('Product not found');
-        return product;
+    if (!product) throw new NotFoundException('Product not found');
+    return product;
+  }
+
+  // ✅ ADDED: Get products by category
+  async getProductsByCategory(category: string, storeId?: string) {
+    const filters: any = { category };
+
+    if (storeId) {
+      filters.storeId = storeId;
     }
+
+    return this.prisma.product.findMany({
+      where: filters,
+      include: { store: { select: { name: true, location: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  // ✅ ADDED: Get all unique categories
+  async getCategories() {
+    const categories = await this.prisma.product.findMany({
+      select: { category: true },
+      distinct: ['category'],
+    });
+    
+    return categories.map(item => item.category).filter(Boolean);
+  }
 }

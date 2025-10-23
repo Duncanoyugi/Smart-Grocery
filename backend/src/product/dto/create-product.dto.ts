@@ -1,23 +1,31 @@
-import { IsNotEmpty, IsString, IsNumber, IsOptional, IsDateString } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsDateString, Min, IsPositive } from 'class-validator';
 
 export class CreateProductDto {
-  @IsNotEmpty()
   @IsString()
   name: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   description?: string;
 
-  @IsNotEmpty()
   @IsNumber()
+  @Min(0)
+  @IsPositive()
   price: number;
 
-  @IsNotEmpty()
   @IsNumber()
+  @Min(0)
   stock: number;
 
+  @IsNumber()
+  @Min(0)
   @IsOptional()
+  reorderLevel?: number;
+
   @IsDateString()
+  @IsOptional()
   expiryDate?: string;
+
+  @IsString() // ✅ CHANGED: category is now required
+  category: string;
 }

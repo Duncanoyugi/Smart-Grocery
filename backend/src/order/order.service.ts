@@ -1,9 +1,15 @@
-import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationService } from '../notifications/notifications.service';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(OrdersService.name);
+
+  constructor(
+    private prisma: PrismaService,
+    private readonly notificationService: NotificationService, // Add NotificationService
+  ) {}
 
   async placeOrder(userId: string) {
     // Verify user exists
@@ -17,7 +23,7 @@ export class OrdersService {
 
     const cartItems = await this.prisma.cart.findMany({
       where: { userId },
-      include: { product: true },
+      include: { product: { include: { store: true } } }, // Include store info
     });
 
     if (cartItems.length === 0) {
@@ -50,10 +56,27 @@ export class OrdersService {
           throw new BadRequestException(`Insufficient stock for ${product.name}. Available: ${product.stock + item.quantity}, requested: ${item.quantity}`);
         }
 
-        // Check low stock threshold
-        if (product.reorderLevel && product.stock <= product.reorderLevel) {
-          console.log(`⚠️ Low stock alert: ${product.name} has only ${product.stock} left!`);
-          // You can trigger email notifications here later
+        // ✅ UPDATED: Check low stock threshold and send notification
+        const lowStockThreshold = product.reorderLevel || product.lowStockThreshold || 10;
+        if (product.stock <= lowStockThreshold) {
+          this.logger.log(`⚠️ Low stock alert: ${product.name} has only ${product.stock} left!`);
+          
+          // Send low stock notification
+          try {
+            const message = `Low stock alert after order: ${product.name} has only ${product.stock} units left (threshold: ${lowStockThreshold})`;
+            
+            // Use the product's store information from the included relation
+            await this.notificationService.createNotificationForOwner(
+              product.storeId,
+              message,
+              true // send email
+            );
+            
+            this.logger.log(`Low stock notification sent for product: ${product.name}`);
+          } catch (error) {
+            this.logger.error(`Failed to send low stock notification: ${error.message}`);
+            // Don't throw error here - order should still complete
+          }
         }
 
         // Create order item

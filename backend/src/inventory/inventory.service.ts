@@ -1,16 +1,20 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AdjustStockDto } from './dto/adjust-stock.dto';
 import { RestockDto } from './dto/restock.dto';
 import { MailerService } from '../mailer/mailer.service';
+import { NotificationService } from '../notifications/notifications.service';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class InventoryService {
+  private readonly logger = new Logger(InventoryService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly mailer: MailerService,
     private readonly config: ConfigService,
+    private readonly notificationService: NotificationService, 
   ) {}
 
   // Get all products for a store (owner/admin)
@@ -58,9 +62,33 @@ export class InventoryService {
         }),
       ]);
 
+      // ✅ ADDED: Automatically check for low stock after adjustment
+      await this.checkAndNotifyLowStock(productId, updatedProduct);
+
       return { product: updatedProduct, history };
     } catch (err) {
       throw new InternalServerErrorException('Failed to update stock: ' + err.message);
+    }
+  }
+
+  // ✅ ADDED: Check if stock is low and send notification
+  private async checkAndNotifyLowStock(productId: string, product: any) {
+    const lowStockThreshold = product.reorderLevel || product.lowStockThreshold || 10;
+    
+    // Only notify if stock falls below threshold
+    if (product.stock <= lowStockThreshold) {
+      const message = `Low stock alert: ${product.name} has only ${product.stock} units left (threshold: ${lowStockThreshold})`;
+      
+      try {
+        await this.notificationService.createNotificationForOwner(
+          product.storeId,
+          message,
+          true // send email
+        );
+        this.logger.log(`Low stock notification sent for product: ${product.name}`);
+      } catch (error) {
+        this.logger.error(`Failed to send low stock notification: ${error.message}`);
+      }
     }
   }
 
@@ -164,6 +192,7 @@ export class InventoryService {
       }
     }
   }
+
   async getLowStockProducts() {
     return this.prisma.product.findMany({
       where: {

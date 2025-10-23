@@ -76,4 +76,5 @@ export class MailerService {
       throw new InternalServerErrorException('Error rendering email template');
     }
   }
+  
 }

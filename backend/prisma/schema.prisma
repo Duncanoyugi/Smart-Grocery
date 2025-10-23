@@ -23,60 +23,61 @@ model User {
   updatedAt        DateTime  @updatedAt
 
   // Relations
-  store     Store?
-  orders    Order[]
-  cartItems Cart[]
+  store         Store?
+  orders        Order[]
+  cartItems     Cart[]
+  notifications Notification[] // ← ADD THIS: Reverse relation for Notification
 }
 
 model Store {
-  id        String    @id @default(uuid())
-  name      String    @unique
-  location  String
-  ownerId   String    @unique
-  owner     User      @relation(fields: [ownerId], references: [id])
-  products  Product[]
-  createdAt DateTime  @default(now())
+  id            String         @id @default(uuid())
+  name          String         @unique
+  location      String
+  ownerId       String         @unique
+  owner         User           @relation(fields: [ownerId], references: [id])
+  products      Product[]
+  createdAt     DateTime       @default(now())
+  notifications Notification[] // ← ADD THIS: Reverse relation for Notification
 
   @@map("stores")
 }
 
 model Product {
-  id          String          @id @default(uuid())
-  name        String
-  description String?
-  price       Float
-  stock       Int
-  reorderLevel Int?           // threshold for low stock alerts
-  expiryDate  DateTime?
-  imageUrl    String?
-  storeId     String
-  createdAt   DateTime        @default(now())
-  lowStockThreshold Int @default(10)
+  id                String    @id @default(uuid())
+  name              String
+  description       String?
+  price             Float
+  stock             Int
+  reorderLevel      Int? // threshold for low stock alerts
+  expiryDate        DateTime?
+  imageUrl          String?
+  category          String
+  storeId           String
+  createdAt         DateTime  @default(now())
+  lowStockThreshold Int       @default(10)
 
   // Relations
   store        Store          @relation(fields: [storeId], references: [id])
   cartItems    Cart[]
   orderItems   OrderItem[]
-  stockHistory StockHistory[] // ← ADD THIS: Reverse relation for StockHistory
+  stockHistory StockHistory[] // Reverse relation for StockHistory
 
   // optional: index for expiry queries (SQL Server supports indexing via @@index)
   @@index([expiryDate])
 }
 
 model StockHistory {
-  id         String   @id @default(uuid())
-  productId  String
-  change     Int
-  reason     String?
-  createdBy  String?
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  productId String
+  change    Int
+  reason    String?
+  createdBy String?
+  createdAt DateTime @default(now())
 
-  product    Product  @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  
+  product Product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
   // Optional: Prevent duplicate entries for same product at same time
   @@unique([productId, createdAt])
-  // Or if you want more granular control:
-  // @@unique([productId, change, createdAt])
 }
 
 model Cart {
@@ -113,4 +114,17 @@ model OrderItem {
   // Fixed referential actions to avoid cascade loops
   order   Order   @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   product Product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String? // the user (owner/admin) who should receive it
+  storeId   String? // optional: the store related to the notification
+  message   String
+  type      String   @default("LOW_STOCK")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user  User?  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  store Store? @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

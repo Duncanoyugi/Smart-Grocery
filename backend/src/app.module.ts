@@ -8,6 +8,10 @@ import { UsersModule } from './user/user.module';
 import { StoresModule } from './store/store.module';
 import { CartModule } from './cart/cart.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { TasksModule } from './tasks/tasks.module';
+import { RecommendationsModule } from './recommendation/recommendation.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -17,6 +21,10 @@ import { InventoryModule } from './inventory/inventory.module';
     StoresModule,
     CartModule,
     InventoryModule,
+    NotificationsModule,
+    TasksModule,
+    RecommendationsModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
