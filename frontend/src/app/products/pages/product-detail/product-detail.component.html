@@ -1,0 +1,181 @@
+<div class="product-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <div class="loading-spinner">🔄</div>
+    <p>Loading product details...</p>
+  </div>
+
+  <!-- Product Details -->
+  <div *ngIf="!isLoading && product" class="product-detail">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/products" class="breadcrumb-link">Products</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-current">{{ product.category }}</span>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-current">{{ product.name }}</span>
+    </nav>
+
+    <!-- Product Main Section -->
+    <div class="product-main">
+      <!-- Product Images -->
+      <div class="product-images">
+        <div class="main-image">
+          <img
+            [src]="product.imageUrl || '/assets/images/placeholder-product.jpg'"
+            [alt]="product.name"
+            (error)="product.imageUrl = '/assets/images/placeholder-product.jpg'"
+          />
+        </div>
+        
+        <!-- Image Gallery (placeholder for multiple images) -->
+        <div class="image-gallery">
+          <div
+            class="thumbnail"
+            [class.active]="activeImageIndex === 0"
+            (click)="setImageIndex(0)"
+          >
+            <img
+              [src]="product.imageUrl || '/assets/images/placeholder-product.jpg'"
+              [alt]="product.name + ' thumbnail'"
+            />
+          </div>
+          <!-- Additional thumbnails can be added here when we have multiple images -->
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <!-- Stock Status -->
+        <div class="stock-status" [class]="stockStatusClass">
+          {{ stockStatus }}
+        </div>
+
+        <h1 class="product-title">{{ product.name }}</h1>
+        
+        <div class="product-meta">
+          <span class="product-category">{{ product.category }}</span>
+          <span class="product-store" *ngIf="product.store">
+            Sold by: {{ product.store.name }}
+          </span>
+        </div>
+
+        <div class="product-price-section">
+          <span class="product-price">${{ product.price }}</span>
+          <div class="product-stock">
+            {{ product.stock }} units available
+          </div>
+        </div>
+
+        <div class="product-description">
+          <h3>Description</h3>
+          <p>{{ product.description || 'No description available for this product.' }}</p>
+        </div>
+
+        <!-- Add to Cart Section -->
+        <div class="add-to-cart-section">
+          <div class="quantity-selector">
+            <label for="quantity">Quantity:</label>
+            <div class="quantity-controls">
+              <button
+                type="button"
+                (click)="decreaseQuantity()"
+                [disabled]="quantity <= 1"
+                class="quantity-btn"
+              >
+                -
+              </button>
+              <input
+                type="number"
+                id="quantity"
+                [(ngModel)]="quantity"
+                min="1"
+                [max]="product.stock"
+                class="quantity-input"
+              >
+              <button
+                type="button"
+                (click)="increaseQuantity()"
+                [disabled]="quantity >= product.stock"
+                class="quantity-btn"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <button
+            (click)="addToCart()"
+            [disabled]="isOutOfStock"
+            class="add-to-cart-btn primary"
+            [class.disabled]="isOutOfStock"
+          >
+            {{ isOutOfStock ? 'Out of Stock' : 'Add to Cart' }}
+          </button>
+
+          <button class="buy-now-btn" [disabled]="isOutOfStock">
+            Buy Now
+          </button>
+        </div>
+
+        <!-- Product Details -->
+        <div class="product-details">
+          <div class="detail-item">
+            <strong>Category:</strong>
+            <span>{{ product.category }}</span>
+          </div>
+          <div class="detail-item" *ngIf="product.store">
+            <strong>Store:</strong>
+            <span>{{ product.store.name }}</span>
+          </div>
+          <div class="detail-item" *ngIf="product.expiryDate">
+            <strong>Expiry Date:</strong>
+            <span>{{ product.expiryDate | date }}</span>
+          </div>
+          <div class="detail-item">
+            <strong>Low Stock Threshold:</strong>
+            <span>{{ product.lowStockThreshold }} units</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommended Products -->
+    <div *ngIf="recommendedProducts.length > 0" class="recommended-section">
+      <h2>You Might Also Like</h2>
+      <div class="recommended-grid">
+        <div *ngFor="let recommendedProduct of recommendedProducts" class="recommended-card">
+          <div class="recommended-image">
+            <img
+              [src]="recommendedProduct.imageUrl || '/assets/images/placeholder-product.jpg'"
+              [alt]="recommendedProduct.name"
+              [routerLink]="['/products', recommendedProduct.id]"
+            />
+          </div>
+          <div class="recommended-info">
+            <h3 [routerLink]="['/products', recommendedProduct.id]" class="recommended-title">
+              {{ recommendedProduct.name }}
+            </h3>
+            <p class="recommended-price">${{ recommendedProduct.price }}</p>
+            <button
+              (click)="addToCart()"
+              class="add-to-cart-btn small"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Not Found -->
+  <div *ngIf="!isLoading && !product" class="not-found">
+    <div class="not-found-icon">❓</div>
+    <h2>Product Not Found</h2>
+    <p>The product you're looking for doesn't exist or has been removed.</p>
+    <button routerLink="/products" class="back-to-products-btn">
+      Back to Products
+    </button>
+  </div>
+</div>

@@ -1,0 +1,165 @@
+<div class="verify-container">
+  <div class="verify-card">
+    <!-- Header Section -->
+    <div class="verify-header">
+      <div class="logo">
+        <i class="logo-icon">🛒</i>
+        <h1 class="logo-text">Smart Grocery</h1>
+      </div>
+      <h2 class="welcome-text">Verify Your Email</h2>
+      <p class="subtitle" *ngIf="email">
+        We sent a verification code to <strong>{{ formattedEmail }}</strong>
+      </p>
+      <p class="subtitle" *ngIf="!email">
+        Please check your email for the verification code
+      </p>
+    </div>
+
+    <!-- OTP Form -->
+    <div class="verify-form">
+      <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- OTP Inputs -->
+        <div class="otp-container">
+          <div class="otp-input-group">
+            <input
+              type="text"
+              id="otp1"
+              formControlName="otp1"
+              class="otp-input"
+              maxlength="1"
+              (input)="onInputChange($event, 0)"
+              (keydown)="onKeyDown($event, 0)"
+              (paste)="onPaste($event)"
+              [class.input-error]="otp1?.invalid && otp1?.touched"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+              pattern="[0-9]*"
+            >
+            <input
+              type="text"
+              id="otp2"
+              formControlName="otp2"
+              class="otp-input"
+              maxlength="1"
+              (input)="onInputChange($event, 1)"
+              (keydown)="onKeyDown($event, 1)"
+              (paste)="onPaste($event)"
+              [class.input-error]="otp2?.invalid && otp2?.touched"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+              pattern="[0-9]*"
+            >
+            <input
+              type="text"
+              id="otp3"
+              formControlName="otp3"
+              class="otp-input"
+              maxlength="1"
+              (input)="onInputChange($event, 2)"
+              (keydown)="onKeyDown($event, 2)"
+              (paste)="onPaste($event)"
+              [class.input-error]="otp3?.invalid && otp3?.touched"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+              pattern="[0-9]*"
+            >
+            <input
+              type="text"
+              id="otp4"
+              formControlName="otp4"
+              class="otp-input"
+              maxlength="1"
+              (input)="onInputChange($event, 3)"
+              (keydown)="onKeyDown($event, 3)"
+              (paste)="onPaste($event)"
+              [class.input-error]="otp4?.invalid && otp4?.touched"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+              pattern="[0-9]*"
+            >
+            <input
+              type="text"
+              id="otp5"
+              formControlName="otp5"
+              class="otp-input"
+              maxlength="1"
+              (input)="onInputChange($event, 4)"
+              (keydown)="onKeyDown($event, 4)"
+              (paste)="onPaste($event)"
+              [class.input-error]="otp5?.invalid && otp5?.touched"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+              pattern="[0-9]*"
+            >
+            <input
+              type="text"
+              id="otp6"
+              formControlName="otp6"
+              class="otp-input"
+              maxlength="1"
+              (input)="onInputChange($event, 5)"
+              (keydown)="onKeyDown($event, 5)"
+              (paste)="onPaste($event)"
+              [class.input-error]="otp6?.invalid && otp6?.touched"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+              pattern="[0-9]*"
+            >
+          </div>
+
+          <!-- Error Message -->
+          <div class="error-message" *ngIf="verifyForm.invalid && verifyForm.touched">
+            Please enter all 6 digits of the verification code
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          class="submit-button"
+          [disabled]="verifyForm.invalid || isLoading"
+          [class.loading]="isLoading"
+        >
+          <span *ngIf="!isLoading">Verify Email</span>
+          <span *ngIf="isLoading" class="loading-spinner">
+            <i class="spinner">⏳</i> Verifying...
+          </span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Resend OTP Section -->
+    <div class="resend-section">
+      <p class="resend-text">
+        Didn't receive the code? 
+        <button 
+          type="button" 
+          class="resend-button"
+          (click)="resendOtp()"
+          [disabled]="!canResend || isLoading"
+        >
+          {{ countdown > 0 ? `Resend in ${countdown}s` : 'Resend Code' }}
+        </button>
+      </p>
+    </div>
+
+    <!-- Help Text -->
+    <div class="help-section">
+      <div class="help-card">
+        <h4>💡 Need help?</h4>
+        <ul>
+          <li>Check your spam or junk folder</li>
+          <li>Make sure you entered the correct email address</li>
+          <li>The code will expire in 10 minutes</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Back to Register Link -->
+    <div class="back-section">
+      <a routerLink="/auth/register" class="back-link">
+        ← Back to Registration
+      </a>
+    </div>
+  </div>
+</div>

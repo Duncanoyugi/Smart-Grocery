@@ -1,0 +1,323 @@
+/* Main Container */
+.verify-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Verify Card */
+.verify-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  backdrop-filter: blur(10px);
+}
+
+/* Header Section */
+.verify-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.logo-icon {
+  font-size: 2.5rem;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.welcome-text {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 12px 0;
+}
+
+.subtitle {
+  color: #718096;
+  font-size: 0.95rem;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.subtitle strong {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+/* OTP Form */
+.verify-form {
+  margin-bottom: 24px;
+}
+
+.otp-container {
+  margin-bottom: 24px;
+}
+
+.otp-input-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.otp-input {
+  width: 50px;
+  height: 60px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+  color: #2d3748;
+}
+
+.otp-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: scale(1.05);
+}
+
+.otp-input::placeholder {
+  color: #cbd5e0;
+}
+
+.otp-input.input-error {
+  border-color: #e53e3e;
+  background-color: #fff5f5;
+}
+
+.otp-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Error Message */
+.error-message {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Submit Button */
+.submit-button {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-button.loading {
+  cursor: wait;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Resend Section */
+.resend-section {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 16px 0;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.resend-text {
+  color: #718096;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.resend-button {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.resend-button:hover:not(:disabled) {
+  color: #5a6fd8;
+}
+
+.resend-button:disabled {
+  color: #a0aec0;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* Help Section */
+.help-section {
+  margin-bottom: 24px;
+}
+
+.help-card {
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.help-card h4 {
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  color: #4a5568;
+  font-weight: 600;
+}
+
+.help-card ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.help-card li {
+  font-size: 0.85rem;
+  color: #718096;
+  margin-bottom: 6px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.help-card li::before {
+  content: '•';
+  position: absolute;
+  left: -12px;
+  color: #667eea;
+}
+
+/* Back Section */
+.back-section {
+  text-align: center;
+}
+
+.back-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #5a6fd8;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .verify-container {
+    padding: 16px;
+  }
+  
+  .verify-card {
+    padding: 24px;
+  }
+  
+  .welcome-text {
+    font-size: 1.5rem;
+  }
+  
+  .logo-text {
+    font-size: 1.3rem;
+  }
+  
+  .otp-input-group {
+    gap: 8px;
+  }
+  
+  .otp-input {
+    width: 45px;
+    height: 55px;
+    font-size: 1.3rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .otp-input,
+  .submit-button {
+    transition: none;
+  }
+  
+  .spinner {
+    animation: none;
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.otp-input:focus-visible,
+.submit-button:focus-visible,
+.resend-button:focus-visible,
+.back-link:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Auto-fill styles */
+.otp-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #fafafa inset !important;
+  -webkit-text-fill-color: #2d3748 !important;
+}

@@ -1,0 +1,275 @@
+<div class="register-container">
+  <div class="register-card">
+    <!-- Header Section -->
+    <div class="register-header">
+      <div class="logo">
+        <i class="logo-icon">🛒</i>
+        <h1 class="logo-text">Smart Grocery</h1>
+      </div>
+      <h2 class="welcome-text">Create Your Account</h2>
+      <p class="subtitle">Join our smart grocery community today</p>
+    </div>
+
+    <!-- User Type Selection -->
+    <div class="user-type-section">
+      <h3 class="section-title">I want to:</h3>
+      <div class="user-type-options">
+        <button
+          type="button"
+          class="user-type-option"
+          [class.selected]="userType === 'customer'"
+          (click)="setUserType('customer')"
+        >
+          <div class="option-icon">🛍️</div>
+          <div class="option-content">
+            <h4>Shop as Customer</h4>
+            <p>Browse products, add to cart, and place orders</p>
+          </div>
+        </button>
+        
+        <button
+          type="button"
+          class="user-type-option"
+          [class.selected]="userType === 'store_owner'"
+          (click)="setUserType('store_owner')"
+        >
+          <div class="option-icon">🏪</div>
+          <div class="option-content">
+            <h4>Register as Store Owner</h4>
+            <p>Manage products, inventory, and receive orders</p>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="register-form">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">Basic Information</h3>
+          
+          <!-- Name Field -->
+          <div class="form-group">
+            <label for="name" class="form-label">Full Name</label>
+            <div class="input-container">
+              <i class="input-icon">👤</i>
+              <input
+                type="text"
+                id="name"
+                formControlName="name"
+                class="form-input"
+                placeholder="Enter your full name"
+                [class.input-error]="name?.invalid && name?.touched"
+                autocomplete="name"
+              >
+            </div>
+            <div class="error-message" *ngIf="name?.errors?.['required'] && name?.touched">
+              Full name is required
+            </div>
+            <div class="error-message" *ngIf="name?.errors?.['minlength'] && name?.touched">
+              Name must be at least 2 characters
+            </div>
+            <div class="error-message" *ngIf="name?.errors?.['maxlength'] && name?.touched">
+              Name cannot exceed 50 characters
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
+            <div class="input-container">
+              <i class="input-icon">📧</i>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="form-input"
+                placeholder="Enter your email address"
+                [class.input-error]="email?.invalid && email?.touched"
+                autocomplete="email"
+              >
+            </div>
+            <div class="error-message" *ngIf="email?.errors?.['required'] && email?.touched">
+              Email address is required
+            </div>
+            <div class="error-message" *ngIf="email?.errors?.['email'] && email?.touched">
+              Please enter a valid email address
+            </div>
+          </div>
+        </div>
+
+        <!-- Store Information Section (Only for Store Owners) -->
+        <div class="form-section" *ngIf="userType === 'store_owner'">
+          <h3 class="section-title">Store Information</h3>
+          
+          <!-- Store Name Field -->
+          <div class="form-group">
+            <label for="storeName" class="form-label">Store Name</label>
+            <div class="input-container">
+              <i class="input-icon">🏪</i>
+              <input
+                type="text"
+                id="storeName"
+                formControlName="storeName"
+                class="form-input"
+                placeholder="Enter your store name"
+                [class.input-error]="storeName?.invalid && storeName?.touched"
+              >
+            </div>
+            <div class="error-message" *ngIf="storeName?.errors?.['required'] && storeName?.touched">
+              Store name is required
+            </div>
+            <div class="error-message" *ngIf="storeName?.errors?.['minlength'] && storeName?.touched">
+              Store name must be at least 2 characters
+            </div>
+          </div>
+
+          <!-- Store Location Field -->
+          <div class="form-group">
+            <label for="storeLocation" class="form-label">Store Location</label>
+            <div class="input-container">
+              <i class="input-icon">📍</i>
+              <input
+                type="text"
+                id="storeLocation"
+                formControlName="storeLocation"
+                class="form-input"
+                placeholder="Enter your store address"
+                [class.input-error]="storeLocation?.invalid && storeLocation?.touched"
+              >
+            </div>
+            <div class="error-message" *ngIf="storeLocation?.errors?.['required'] && storeLocation?.touched">
+              Store location is required
+            </div>
+            <div class="error-message" *ngIf="storeLocation?.errors?.['minlength'] && storeLocation?.touched">
+              Please provide a complete address
+            </div>
+          </div>
+        </div>
+
+        <!-- Password Section -->
+        <div class="form-section">
+          <h3 class="section-title">Security</h3>
+          
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-container">
+              <i class="input-icon">🔒</i>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                formControlName="password"
+                class="form-input"
+                placeholder="Create a strong password"
+                [class.input-error]="password?.invalid && password?.touched"
+                autocomplete="new-password"
+              >
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('password')"
+                tabindex="-1"
+              >
+                <i>{{ showPassword ? '👁️' : '👁️‍🗨️' }}</i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="password?.errors?.['required'] && password?.touched">
+              Password is required
+            </div>
+            <div class="error-message" *ngIf="password?.errors?.['minlength'] && password?.touched">
+              Password must be at least 6 characters
+            </div>
+            <div class="error-message" *ngIf="password?.errors?.['pattern'] && password?.touched">
+              Password must include uppercase, lowercase, and numbers
+            </div>
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <div class="input-container">
+              <i class="input-icon">🔒</i>
+              <input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                class="form-input"
+                placeholder="Confirm your password"
+                [class.input-error]="confirmPassword?.invalid && confirmPassword?.touched"
+                autocomplete="new-password"
+              >
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('confirmPassword')"
+                tabindex="-1"
+              >
+                <i>{{ showConfirmPassword ? '👁️' : '👁️‍🗨️' }}</i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="confirmPassword?.errors?.['required'] && confirmPassword?.touched">
+              Please confirm your password
+            </div>
+            <div class="error-message" *ngIf="confirmPassword?.errors?.['passwordMismatch'] && confirmPassword?.touched">
+              Passwords do not match
+            </div>
+          </div>
+
+          <!-- Password Requirements -->
+          <div class="password-requirements">
+            <h4>Password Requirements:</h4>
+            <ul>
+              <li [class.requirement-met]="hasMinLength()">At least 6 characters</li>
+              <li [class.requirement-met]="hasLowercase()">One lowercase letter</li>
+              <li [class.requirement-met]="hasUppercase()">One uppercase letter</li>
+              <li [class.requirement-met]="hasNumber()">One number</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="form-section">
+          <div class="form-group terms-group">
+            <label class="checkbox-container">
+              <input
+                type="checkbox"
+                formControlName="acceptTerms"
+                class="checkbox-input"
+              >
+              <span class="checkmark"></span>
+              I agree to the <a href="#" class="link">Terms of Service</a> and <a href="#" class="link">Privacy Policy</a>
+            </label>
+            <div class="error-message" *ngIf="acceptTerms?.errors?.['required'] && acceptTerms?.touched">
+              You must accept the terms and conditions
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          class="submit-button"
+          [disabled]="registerForm.invalid || isLoading"
+          [class.loading]="isLoading"
+        >
+          <span *ngIf="!isLoading">
+            {{ userType === 'store_owner' ? 'Create Store Account' : 'Create Customer Account' }}
+          </span>
+          <span *ngIf="isLoading" class="loading-spinner">
+            <i class="spinner">⏳</i> Creating Account...
+          </span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Login Link -->
+    <div class="login-section">
+      <p class="login-text">
+        Already have an account? 
+        <a routerLink="/auth/login" class="login-link">Sign in here</a>
+      </p>
+    </div>
+  </div>
+</div>

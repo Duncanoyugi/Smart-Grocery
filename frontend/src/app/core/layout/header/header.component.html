@@ -1,0 +1,258 @@
+<header class="header">
+  <div class="header-container">
+    <!-- Logo and Brand -->
+    <div class="brand-section">
+      <a routerLink="/" class="logo-link">
+        <div class="logo">
+          <span class="logo-icon">🛒</span>
+          <span class="logo-text">Smart Grocery</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+      <a routerLink="/products" routerLinkActive="active" class="nav-link">
+        Products
+      </a>
+      
+      <!-- Admin Links -->
+      <ng-container *ngIf="isAdmin">
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+          Dashboard
+        </a>
+        <a routerLink="/admin/products" routerLinkActive="active" class="nav-link">
+          Manage Products
+        </a>
+        <a routerLink="/admin/inventory" routerLinkActive="active" class="nav-link">
+          Inventory
+        </a>
+        <a routerLink="/admin/orders" routerLinkActive="active" class="nav-link">
+          Orders
+        </a>
+      </ng-container>
+
+      <!-- Customer Links -->
+      <ng-container *ngIf="currentUser && !isAdmin">
+        <a routerLink="/orders/my-orders" routerLinkActive="active" class="nav-link">
+          My Orders
+        </a>
+      </ng-container>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <!-- Cart Icon -->
+      <div class="cart-section">
+        <a routerLink="/cart" class="cart-link">
+          <div class="cart-icon">
+            🛍️
+            <span *ngIf="cartItemCount > 0" class="cart-badge">
+              {{ cartItemCount > 99 ? '99+' : cartItemCount }}
+            </span>
+          </div>
+          <span class="cart-text">Cart</span>
+        </a>
+      </div>
+
+      <!-- User Section -->
+      <div class="user-section">
+        <ng-container *ngIf="currentUser; else loginSection">
+          <!-- User Menu -->
+          <div class="user-menu-container">
+            <button
+              (click)="toggleUserMenu()"
+              class="user-menu-trigger"
+              [class.active]="showUserMenu"
+            >
+              <div class="user-avatar">
+                {{ userInitials }}
+              </div>
+              <span class="user-name">{{ currentUser.name }}</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+
+            <!-- User Dropdown Menu -->
+            <div *ngIf="showUserMenu" class="user-dropdown">
+              <div class="user-info">
+                <div class="user-avatar-large">
+                  {{ userInitials }}
+                </div>
+                <div class="user-details">
+                  <div class="user-name-large">{{ currentUser.name }}</div>
+                  <div class="user-email">{{ currentUser.email }}</div>
+                  <div class="user-role">{{ currentUser.role }}</div>
+                </div>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <a
+                routerLink="/profile"
+                (click)="closeMenus()"
+                class="dropdown-item"
+              >
+                👤 My Profile
+              </a>
+
+              <ng-container *ngIf="!isAdmin">
+                <a
+                  routerLink="/orders/my-orders"
+                  (click)="closeMenus()"
+                  class="dropdown-item"
+                >
+                  📦 My Orders
+                </a>
+              </ng-container>
+
+              <ng-container *ngIf="isAdmin">
+                <a
+                  routerLink="/admin/dashboard"
+                  (click)="closeMenus()"
+                  class="dropdown-item"
+                >
+                  📊 Dashboard
+                </a>
+              </ng-container>
+
+              <div class="dropdown-divider"></div>
+
+              <button
+                (click)="logout()"
+                class="dropdown-item logout-btn"
+              >
+                🚪 Logout
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #loginSection>
+          <!-- Login/Register Links -->
+          <div class="auth-links">
+            <a routerLink="/auth/login" class="auth-link login-link">
+              Sign In
+            </a>
+            <a routerLink="/auth/register" class="auth-link register-link">
+              Sign Up
+            </a>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button
+        (click)="toggleMobileMenu()"
+        class="mobile-menu-toggle"
+        [class.active]="showMobileMenu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Menu -->
+  <div *ngIf="showMobileMenu" class="mobile-nav">
+    <a
+      routerLink="/products"
+      (click)="closeMenus()"
+      class="mobile-nav-link"
+    >
+      Products
+    </a>
+
+    <!-- Admin Mobile Links -->
+    <ng-container *ngIf="isAdmin">
+      <a
+        routerLink="/admin/dashboard"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        Dashboard
+      </a>
+      <a
+        routerLink="/admin/products"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        Manage Products
+      </a>
+      <a
+        routerLink="/admin/inventory"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        Inventory
+      </a>
+      <a
+        routerLink="/admin/orders"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        Orders
+      </a>
+    </ng-container>
+
+    <!-- Customer Mobile Links -->
+    <ng-container *ngIf="currentUser && !isAdmin">
+      <a
+        routerLink="/orders/my-orders"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        My Orders
+      </a>
+      <a
+        routerLink="/cart"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        Cart ({{ cartItemCount }})
+      </a>
+    </ng-container>
+
+    <!-- Auth Mobile Links -->
+    <ng-container *ngIf="!currentUser">
+      <a
+        routerLink="/auth/login"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        Sign In
+      </a>
+      <a
+        routerLink="/auth/register"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        Sign Up
+      </a>
+    </ng-container>
+
+    <!-- User Mobile Links -->
+    <ng-container *ngIf="currentUser">
+      <a
+        routerLink="/profile"
+        (click)="closeMenus()"
+        class="mobile-nav-link"
+      >
+        My Profile
+      </a>
+      <button
+        (click)="logout()"
+        class="mobile-nav-link logout-mobile"
+      >
+        Logout
+      </button>
+    </ng-container>
+  </div>
+
+  <!-- Overlay for closing menus -->
+  <div
+    *ngIf="showUserMenu || showMobileMenu"
+    class="overlay"
+    (click)="closeMenus()"
+  ></div>
+</header>

@@ -1,0 +1,115 @@
+/* ... (keep all previous CSS styles) ... */
+
+/* User Type Section */
+.user-type-section {
+  margin-bottom: 32px;
+  padding: 24px;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 16px 0;
+}
+
+.user-type-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.user-type-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.user-type-option:hover {
+  border-color: #cbd5e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.user-type-option.selected {
+  border-color: #667eea;
+  background-color: #f0f4ff;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.option-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.option-content h4 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.option-content p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #718096;
+  line-height: 1.4;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 32px;
+  padding: 24px;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-section:last-of-type {
+  margin-bottom: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .user-type-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .user-type-option {
+    padding: 16px;
+  }
+  
+  .form-section {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-type-section,
+  .form-section {
+    padding: 16px;
+  }
+  
+  .option-icon {
+    font-size: 1.5rem;
+  }
+  
+  .option-content h4 {
+    font-size: 0.95rem;
+  }
+  
+  .option-content p {
+    font-size: 0.8rem;
+  }
+}

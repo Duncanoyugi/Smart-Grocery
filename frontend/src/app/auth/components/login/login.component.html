@@ -1,0 +1,124 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header Section -->
+    <div class="login-header">
+      <div class="logo">
+        <i class="logo-icon">🛒</i>
+        <h1 class="logo-text">Smart Grocery</h1>
+      </div>
+      <h2 class="welcome-text">Welcome Back</h2>
+      <p class="subtitle">Sign in to your account to continue</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="login-form">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <div class="input-container">
+            <i class="input-icon">📧</i>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-input"
+              placeholder="Enter your email address"
+              [class.input-error]="email?.invalid && email?.touched"
+              autocomplete="email"
+            >
+          </div>
+          <div class="error-message" *ngIf="email?.errors?.['required'] && email?.touched">
+            Email address is required
+          </div>
+          <div class="error-message" *ngIf="email?.errors?.['email'] && email?.touched">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <div class="password-label-container">
+            <label for="password" class="form-label">Password</label>
+            <a class="forgot-password" routerLink="/auth/forgot-password">Forgot password?</a>
+          </div>
+          <div class="input-container">
+            <i class="input-icon">🔒</i>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-input"
+              placeholder="Enter your password"
+              [class.input-error]="password?.invalid && password?.touched"
+              autocomplete="current-password"
+            >
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              tabindex="-1"
+            >
+              <i>{{ showPassword ? '👁️' : '👁️‍🗨️' }}</i>
+            </button>
+          </div>
+          <div class="error-message" *ngIf="password?.errors?.['required'] && password?.touched">
+            Password is required
+          </div>
+          <div class="error-message" *ngIf="password?.errors?.['minlength'] && password?.touched">
+            Password must be at least 6 characters
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          class="submit-button"
+          [disabled]="isLoading"
+          [class.loading]="isLoading"
+        >
+          <span *ngIf="!isLoading">Sign In</span>
+          <span *ngIf="isLoading" class="loading-spinner">
+            <i class="spinner">⏳</i> Signing In...
+          </span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <!-- Social Login (Placeholder for future integration) -->
+    <div class="social-login">
+      <button type="button" class="social-button google-button" disabled>
+        <i>G</i>
+        Continue with Google
+      </button>
+      <!-- <button type="button" class="social-button facebook-button" disabled>
+        <i>f</i>
+        Continue with Facebook
+      </button> -->
+    </div>
+
+    <!-- Registration Link -->
+    <div class="register-section">
+      <p class="register-text">
+        Don't have an account? 
+        <a routerLink="/auth/register" class="register-link">Create one here</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Demo Credentials (Remove in production) -->
+  <div class="demo-credentials">
+    <details>
+      <summary>Demo Credentials</summary>
+      <div class="demo-content">
+        <p><strong>Admin:</strong> admin@example.com / password123</p>
+        <p><strong>Customer:</strong> customer@example.com / password123</p>
+      </div>
+    </details>
+  </div>
+</div>
