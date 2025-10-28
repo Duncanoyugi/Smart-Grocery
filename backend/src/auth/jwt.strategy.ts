@@ -4,11 +4,11 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '../prisma/prisma.service';
 
 export interface JwtPayload {
-  sub: string;      // User ID (from your token)
-  email: string;    // User email
-  role: string;     // User role
-  iat?: number;     // Issued at (optional)
-  exp?: number;     // Expiration (optional)
+  sub: string;      
+  email: string;    
+  role: string;     
+  iat?: number;    
+  exp?: number;     
 }
 
 @Injectable()
@@ -22,9 +22,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-    // Use payload.sub as the user ID (matches your token structure)
     const user = await this.prisma.user.findUnique({ 
-      where: { id: payload.sub }  // Using 'sub' field as user ID
+      where: { id: payload.sub }  
     });
     
     if (!user) {
@@ -34,8 +33,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user.isVerified) {
       throw new UnauthorizedException('Please verify your email address');
     }
-
-    // Return object attached to request.user
     return {
       id: user.id,
       email: user.email,
