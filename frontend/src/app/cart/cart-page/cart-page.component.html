@@ -1,0 +1,180 @@
+<div class="cart-container">
+  <!-- Header Section -->
+  <div class="cart-header">
+    <h1>Shopping Cart</h1>
+    <p *ngIf="!isCartEmpty" class="cart-summary">
+      {{ cartItemCount }} {{ cartItemCount === 1 ? 'item' : 'items' }} in your cart
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <div class="loading-spinner">🔄</div>
+    <p>Loading your cart...</p>
+  </div>
+
+  <!-- Empty Cart State -->
+  <div *ngIf="!isLoading && isCartEmpty" class="empty-cart">
+    <div class="empty-cart-icon">🛒</div>
+    <h2>Your cart is empty</h2>
+    <p>Looks like you haven't added any items to your cart yet.</p>
+    <button (click)="continueShopping()" class="continue-shopping-btn">
+      Start Shopping
+    </button>
+  </div>
+
+  <!-- Cart Content -->
+  <div *ngIf="!isLoading && !isCartEmpty" class="cart-content">
+    <div class="cart-layout">
+      <!-- Cart Items -->
+      <div class="cart-items-section">
+        <div class="cart-items-header">
+          <h2>Cart Items</h2>
+          <button 
+            (click)="clearCart()" 
+            [disabled]="isUpdating"
+            class="clear-cart-btn"
+          >
+            {{ isUpdating ? 'Clearing...' : 'Clear Cart' }}
+          </button>
+        </div>
+
+        <div class="cart-items">
+          <div *ngFor="let item of cartItems" class="cart-item">
+            <!-- Product Image -->
+            <div class="item-image">
+              <img
+                [src]="item.product?.imageUrl || '/assets/images/placeholder-product.jpg'"
+                [alt]="item.product?.name"
+                (error)="item.product!.imageUrl = '/assets/images/placeholder-product.jpg'"
+              />
+            </div>
+
+            <!-- Product Details -->
+            <div class="item-details">
+              <h3 class="product-name">{{ item.product?.name }}</h3>
+              <p class="product-category">{{ item.product?.category }}</p>
+              <p class="product-description">
+                {{ item.product?.description || 'No description available' }}
+              </p>
+              
+              <div class="item-meta">
+                <span class="stock-info" [class.low-stock]="(item.product?.stock || 0) <= (item.product?.lowStockThreshold || 0)">
+                  {{ item.product?.stock }} in stock
+                </span>
+                <span class="store-info" *ngIf="item.product?.store">
+                  Sold by: {{ item.product.store.name }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Quantity Controls -->
+            <div class="quantity-section">
+              <label class="quantity-label">Qty:</label>
+              <div class="quantity-controls">
+                <button
+                  (click)="updateQuantity(item, item.quantity - 1)"
+                  [disabled]="item.quantity <= 1 || isUpdating"
+                  class="quantity-btn"
+                >
+                  -
+                </button>
+                <span class="quantity-display">{{ item.quantity }}</span>
+                <button
+                  (click)="updateQuantity(item, item.quantity + 1)"
+                  [disabled]="item.quantity >= (item.product?.stock || 0) || isUpdating"
+                  class="quantity-btn"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="price-section">
+              <div class="item-price">${{ (item.product?.price || 0) * item.quantity | number:'1.2-2' }}</div>
+              <div class="unit-price">${{ item.product?.price }} each</div>
+            </div>
+
+            <!-- Remove Button -->
+            <button
+              (click)="removeItem(item.id)"
+              [disabled]="isUpdating"
+              class="remove-btn"
+              title="Remove from cart"
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary-section">
+        <div class="order-summary-card">
+          <h3>Order Summary</h3>
+          
+          <div class="summary-row">
+            <span>Subtotal ({{ cartItemCount }} items):</span>
+            <span>${{ cartSubtotal | number:'1.2-2' }}</span>
+          </div>
+          
+          <div class="summary-row">
+            <span>Shipping:</span>
+            <span *ngIf="shippingCost === 0" class="free-shipping">FREE</span>
+            <span *ngIf="shippingCost > 0">${{ shippingCost | number:'1.2-2' }}</span>
+          </div>
+          
+          <div class="summary-row">
+            <span>Tax (8.5%):</span>
+            <span>${{ taxAmount | number:'1.2-2' }}</span>
+          </div>
+          
+          <div class="summary-divider"></div>
+          
+          <div class="summary-row total-row">
+            <strong>Total:</strong>
+            <strong>${{ grandTotal | number:'1.2-2' }}</strong>
+          </div>
+
+          <!-- Shipping Notice -->
+          <div *ngIf="shippingCost === 0" class="shipping-notice">
+            🎉 You've qualified for free shipping!
+          </div>
+          <div *ngIf="shippingCost > 0" class="shipping-notice">
+            Add ${{ (50 - cartSubtotal) | number:'1.2-2' }} more for free shipping!
+          </div>
+
+          <!-- Checkout Button -->
+          <button
+            (click)="proceedToCheckout()"
+            class="checkout-btn"
+          >
+            Proceed to Checkout
+          </button>
+
+          <!-- Continue Shopping -->
+          <button
+            (click)="continueShopping()"
+            class="continue-shopping-btn secondary"
+          >
+            Continue Shopping
+          </button>
+        </div>
+
+        <!-- Security Badges -->
+        <div class="security-badges">
+          <div class="security-badge">
+            🔒 Secure Checkout
+          </div>
+          <div class="security-badge">
+            ✅ Money Back Guarantee
+          </div>
+          <div class="security-badge">
+            🚚 Free Shipping Over $50
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

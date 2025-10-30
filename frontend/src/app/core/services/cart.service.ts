@@ -59,6 +59,23 @@ export class CartService {
     }, 0);
   }
 
+  // Get cart subtotal (before any discounts/taxes)
+  get cartSubtotal(): number {
+    return this.cartItemsSubject.value.reduce((total, item) => {
+      return total + (item.product?.price || 0) * item.quantity;
+    }, 0);
+  }
+
+  // Check if cart is empty
+  get isCartEmpty(): boolean {
+    return this.cartItemsSubject.value.length === 0;
+  }
+
+  // Refresh cart from server
+  refreshCart(): void {
+    this.loadCart();
+  }
+
   private loadCart(): void {
     this.getCart().subscribe({
       next: (response) => {
@@ -68,6 +85,17 @@ export class CartService {
       },
       error: (error) => {
         console.error('Error loading cart:', error);
+      }
+    });
+  }
+
+  // Helper method to update local cart state after operations
+  private updateLocalCart(): void {
+    this.getCart().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.cartItemsSubject.next(response.data);
+        }
       }
     });
   }

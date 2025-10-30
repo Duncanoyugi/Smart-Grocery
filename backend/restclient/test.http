@@ -1,21 +1,22 @@
 ### REGISTER USER
-POST http://localhost:3000/auth/register
+POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Duncan Ochieng",
-  "email": "ochiengduncan7878@gmail.com",
-  "password": "dante1234"
+  "name": "Victor Kiboigo",
+  "email": "victorkiboigo0@gmail.com",
+  "password": "bilham1234"
 }
 
 
+
 ### VERIFY OTP
-POST http://localhost:3000/auth/verify-otp
+POST http://localhost:3000/api/auth/verify-otp
 Content-Type: application/json
 
 {
-  "email": "ochiengduncan7878@gmail.com",
-  "otp": "277698"
+  "email": "victorkiboigo0@gmail.com",
+  "otp": "889618"
 }
 
 
